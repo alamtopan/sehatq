@@ -17,7 +17,7 @@ module Versions::V1::Endpoints
 
       post do
         @product = Product.create!(params)
-        present @product, with: Versions::V1::Entities::ProductEntity
+        present @product, with: Versions::V1::Entities::ProductEntity, message: 'Successfully add product'
       end
 
       desc "------------ Update Product ---------------"
@@ -33,24 +33,19 @@ module Versions::V1::Endpoints
       put "/:id" do
         @product = Product.find params[:id]
         @product.update!(params)
-        present @product, with: Versions::V1::Entities::ProductEntity
+        present @product, with: Versions::V1::Entities::ProductEntity, message: 'Successfully update product'
       end
 
       desc "------------ Delete Product ---------------"
       delete "/:id" do
         @product = Product.find params[:id]
-        if @product.delete
-          present @product, with: Versions::V1::Entities::ProductEntity
-        else
-          error!(@product.errors.full_messages, 400)
-        end
+        present @product, with: Versions::V1::Entities::ProductEntity, message: 'Successfully delete product'
       end
 
       desc "------------ Show Product ---------------"
       get "/:id" do
         @product = Product.friendly.find params[:id]
-        error!('Product not found', 400) if @product.blank?
-        present @product, with: Versions::V1::Entities::ProductEntity
+        present @product, with: Versions::V1::Entities::ProductEntity, message: 'Load successfull'
       end
 
       desc "------------ List Product ---------------"

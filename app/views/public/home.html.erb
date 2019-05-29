@@ -34,8 +34,53 @@
       });
     }
 </script>
-
 <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
-
 <button onclick="loginNow()">LOGIN FACEBOOK</button>
 
+
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+<script>
+  // Called when Google Javascript API Javascript is loaded
+  function HandleGoogleApiLibrary() {
+    // Load "client" & "auth2" libraries
+    gapi.load('client:auth2',  {
+      callback: function() {
+        // Initialize client & auth libraries
+        gapi.client.init({
+            apiKey: 'AIzaSyBKrokpZb8FO_NYuEJC9Vxgp7-_dPHdSc4',
+            clientId: '631137116209-actvu9urd3f7e7k49ib8bl7p0vn5lnlc.apps.googleusercontent.com',
+            scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
+        }).then(
+          function(success) {
+              // Libraries are initialized successfully
+              // You can now make API calls
+          }, 
+          function(error) {
+            // Error occurred
+            // console.log(error) to find the reason
+            }
+        );
+      },
+      onerror: function() {
+        // Failed to load libraries
+      }
+    });
+  }
+
+  // Call login API on a click event
+  function loginNowGoogle() {
+    // API call for Google login
+    gapi.auth2.getAuthInstance().signIn().then(
+      function(response) {
+        params = 'name='+response.w3.U3+'&uid='+response.w3.Eea+'&email='+response.w3.U3+'&fullname='+response.w3.ig+'&provider=google-oauth2'
+        window.location = "http://localhost:3000/api/v1/users/auth/google-oauth2/callback?" + params;
+        // Login API call is successful	
+      },
+      function(error) {
+        // Error occurred
+        // console.log(error) to find the reason
+      }
+    );
+  }
+</script>
+<button onclick="loginNowGoogle()">LOGIN GOOGLE</button>

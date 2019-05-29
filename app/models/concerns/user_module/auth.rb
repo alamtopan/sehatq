@@ -17,9 +17,5 @@ module UserModule
       token = JWT.encode(payload, 'SIGNATURE-KEY-BASE', 'HS256')
       tokens.create( kind: 'jwt', token: token, expiry_date: expiry_date)
     end
-
-    def delete_token
-      tokens.destroy_all
-    end
   end
 end

@@ -15,9 +15,8 @@ module Versions::V1::Endpoints
       end
 
       post do
-        error!('Product already in cart', 400) if @current_order.order_items.where(product_id: params[:product_id]).present?
-        @order_item = @current_order.order_items.create!(product_id: params[:product_id], quantity: params[:quantity])
-        present @order_item.order, with: Versions::V1::Entities::OrderEntity
+        @order_item = OrderService::Cart.new(params: params, current_order: @current_order).add_cart
+        present @order_item.order, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end
 
       desc "------------ Update Order Item ---------------"
@@ -26,19 +25,14 @@ module Versions::V1::Endpoints
       end
 
       put "/order_item/:id" do
-        @order_item = @current_order.order_items.find params[:id]
-        @order_item.update(params)
-        present @order_item.order, with: Versions::V1::Entities::OrderEntity
+        @order_item = OrderService::Cart.new(params: params, current_order: @current_order).update_quantity
+        present @order_item.order, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end
 
       desc "------------ Delete Order item ---------------"
       delete "/order_items/:id" do
-        @order_item = @current_order.order_items.find params[:id]
-        if @order_item.destroy
-          present @order_item.order, with: Versions::V1::Entities::OrderEntity
-        else
-          error!(@order_item.errors.full_messages, 400)
-        end
+        @order_item = OrderService::Cart.new(params: params, current_order: @current_order).remove_cart
+        present @order_item.order, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end
 
       desc "------------ Checkout Order ---------------"
@@ -51,20 +45,15 @@ module Versions::V1::Endpoints
       end
 
       post "/checkout" do
-        error!('Order already checkout', 400) if @current_order.status != Order::PENDING
-        params[:status] = Order::CHECKOUT
-        @order = @current_order.update!(params)
-        session.clear
-        @current_order.reduction_product_stock
-        @current_order
-        present @current_order, with: Versions::V1::Entities::OrderEntity
+        @order = OrderService::Cart.new(params: params, current_order: @current_order).checkout
+        session.clear if @order.persisted?
+        present @order, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end
 
       desc "------------ Show Order ---------------"
       get "/:id" do
         @order = Order.find params[:id]
-        error!('Order not found', 400) if @order.blank?
-        present @order, with: Versions::V1::Entities::OrderEntity
+        present @order, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end
 
       desc "------------ History Order User ---------------"
@@ -74,7 +63,7 @@ module Versions::V1::Endpoints
 
       get do
         @orders = @current_user.orders.search_by(params)
-        present @orders, with: Versions::V1::Entities::OrderEntity
+        present @orders, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end
     end
 

@@ -9,34 +9,20 @@ module Versions::V1::Endpoints
       end
 
       get "auth/:provider/callback" do 
-        auth_response = params
-        @user = User.find_or_create_by(uid: auth_response[:uid], provider: auth_response[:provider])
-        @user.username = auth_response[:uid]
-        @user.email = "#{auth_response[:uid]}@#{auth_response[:provider]}.com" if auth_response[:email].blank?
-        @user.email = auth_response[:email] if auth_response[:email].present?
-        @user.full_name = auth_response[:name]
-        @user.password = auth_response[:uid]
-        if @user.persisted?
-          @user.generate_token
-          @user
-        else
-          @user.save!
-          @user.generate_token
-          @user
-        end
-        present @user, with: Versions::V1::Entities::UserEntity
+        @user = UserService::Auth.new(params: params).omniouth
+        present @user, with: Versions::V1::Entities::UserEntity, message: 'Success'
       end
 
       desc '------------ Check token ---------------'
       get '/check-token' do
         @user = current_user
-        error!('User with token not found') if @user.blank?
-        present @user, with: Versions::V1::Entities::UserEntity
+        present @user, with: Versions::V1::Entities::UserEntity, message: 'Token found'
       end
 
       desc '------------ Logout User ---------------'
       delete '/logout' do 
-        current_user.delete_token
+        @user = UserService::Auth.new(current_user: current_user).logout
+        present @user, with: Versions::V1::Entities::UserEntity, message: 'Successfully logout'
       end
 
       desc "------------ Login user ---------------"
@@ -46,13 +32,8 @@ module Versions::V1::Endpoints
       end
 
       post '/login' do
-        @user = User.where("users.email =? or users.username =?", params[:identifier], params[:identifier]).last
-
-        error!('Email or Username Not Found', 401) if @user.blank?
-        error!('Wrong Password') unless @user.has_password?(params[:password])
-
-        @user.generate_token
-        present @user, with: Versions::V1::Entities::UserEntity
+        @user = UserService::Auth.new(params: params).login
+        present @user, with: Versions::V1::Entities::UserEntity, message: 'Successfully login'
       end
 
       desc "------------ Register user ---------------"
@@ -65,8 +46,8 @@ module Versions::V1::Endpoints
       end
 
       post '/register' do
-        @user = User.create!(params)
-        present @user, with: Versions::V1::Entities::UserEntity
+        @user = UserService::Auth.new(params: params).register
+        present @user, with: Versions::V1::Entities::UserEntity, message: 'Successfully registered'
       end
     end
 
