@@ -1,0 +1,41 @@
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : "452073912287447",
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v3.3'
+    });
+      
+    FB.AppEvents.logPageView();   
+      
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   function loginNow() {
+      FB.login(function(response) {
+        if (response.authResponse) {
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+          params = 'name='+response.name+'&uid='+response.id+'&provider=facebook'
+          window.location = "http://localhost:3000/api/v1/users/auth/facebook/callback?" + params;
+          console.log('Good to see you, ' + response.name + '.');
+        });
+        } else {
+        console.log('User cancelled login or did not fully authorize.');
+        }
+      });
+    }
+</script>
+
+<script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+<button onclick="loginNow()">LOGIN FACEBOOK</button>
+
