@@ -2,6 +2,12 @@ module Versions::V1::Endpoints
   class UserEndpoint < Grape::API
     resources :users do
       desc '------------ Login or Register with omniouth facebook/google_oauth2 ---------------'
+      params do
+        requires :uid, type: String, allow_blank: false
+        requires :name, type: String, allow_blank: false
+        optional :email, type: String
+      end
+
       get "auth/:provider/callback" do 
         auth_response = params
         @user = User.find_or_create_by(uid: auth_response[:uid], provider: auth_response[:provider])
