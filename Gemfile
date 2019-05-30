@@ -76,8 +76,6 @@ group :development do
   gem 'mina-puma', require: false
   gem 'mina-sidekiq'
   gem 'mina-whenever'
-  gem 'factory_girl'
-  gem 'faker'
 end
 
 group :test do
@@ -90,6 +88,8 @@ group :test do
   gem 'shoulda-matchers'
   gem 'rspec'
   gem 'rack-test', :require => 'rack/test'
+  gem 'factory_girl'
+  gem 'faker'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

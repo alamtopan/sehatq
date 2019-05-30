@@ -24,7 +24,7 @@ module Versions::V1::Endpoints
         requires :quantity, type: Integer, allow_blank: false
       end
 
-      put "/order_item/:id" do
+      put "/order_items/:id" do
         @order_item = OrderService::Cart.new(params: params, current_order: @current_order).update_quantity
         present @order_item.order, with: Versions::V1::Entities::OrderEntity, include: 'order_items,product'
       end

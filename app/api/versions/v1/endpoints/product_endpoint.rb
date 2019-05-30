@@ -25,8 +25,8 @@ module Versions::V1::Endpoints
         requires :category, type: String, allow_blank: false
         requires :title, type: String, allow_blank: false
         requires :price, type: Integer, allow_blank: false
-        requires :cover_image, type: File, allow_blank: false
-        requires :description, type: String, allow_blank: false
+        optional :cover_image, type: File
+        optional :description, type: String
         requires :stock, type: Integer, allow_blank: false
       end
 
