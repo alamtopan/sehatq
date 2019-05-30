@@ -19,7 +19,7 @@ rails s
 # AVAILABLE API
 
 POST  |  /api/:version/orders(.json)                         |  v1  |  ------------ Add Order Items ---------------                                       
-PUT  |  /api/:version/orders/order_item/:id(.json)          |  v1  |  ------------ Update Order Item ---------------                                     
+PUT  |  /api/:version/orders/order_items/:id(.json)          |  v1  |  ------------ Update Order Item ---------------                                     
 DELETE  |  /api/:version/orders/order_items/:id(.json)         |  v1  |  ------------ Delete Order item ---------------                                     
 POST  |  /api/:version/orders/checkout(.json)                |  v1  |  ------------ Checkout Order ---------------                                        
 GET  |  /api/:version/orders/:id(.json)                     |  v1  |  ------------ Show Order ---------------                                            
@@ -34,4 +34,9 @@ GET  |  /api/:version/users/auth/:provider/callback(.json)  |  v1  |  ----------
 GET  |  /api/:version/users/check-token(.json)              |  v1  |  ------------ Check token ---------------                                           
 DELETE  |  /api/:version/users/logout(.json)                   |  v1  |  ------------ Logout User ---------------                                           
 POST  |  /api/:version/users/login(.json)                    |  v1  |  ------------ Login user ---------------                                            
-POST  |  /api/:version/users/register(.json)                 |  v1  |  ------------ Register user ---------------       
+POST  |  /api/:version/users/register(.json)                 |  v1  |  ------------ Register user ---------------    
+
+
+# FRONT LOGIN FB & GOOGLE
+
+for login fb or google after rails server in console, you can try open url http://localhost:3000 (after opening, you will see a button to be able to try to login Facebook and Google)
