@@ -51,7 +51,7 @@ gem 'bcrypt'
 gem 'pg'
 gem 'jwt'
 gem 'rack-cors', :require => 'rack/cors'
-gem 'carrierwave', '~> 1.0'
+gem 'carrierwave', '~> 1.3'
 gem 'mini_magick'
 gem 'whenever', require: false
 gem 'friendly_id', '~> 5.2.1'
